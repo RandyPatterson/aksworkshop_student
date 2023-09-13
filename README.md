@@ -6,19 +6,19 @@
 
 ## Module 1 Table of Contents
 
-[Exercise: Create a Basic Azure Kubernetes Service (AKS) Cluster](#exercise-create-a-basic-azure-kubernetes-service-aks-cluster)
+[Exercise 1: Create a Basic Azure Kubernetes Service (AKS) Cluster](#exercise-1-create-a-basic-azure-kubernetes-service-aks-cluster)
 
-[Exercise: Creating a Pod Declaratively](#exercise-creating-a-pod-declaratively)
+[Exercise 2: Creating a Pod Declaratively](#exercise-2-creating-a-pod-declaratively)
 
-[Exercise: Adding/Updating/Deleting Labels on a Pod](#exercise-addingupdatingdeleting-labels-on-a-pod)
+[Exercise 3: Labels on a Pod](#exercise-3-labels-on-a-pod)
 
-[Exercise: Working with Deployments](#exercise-working-with-deployments)
+[Exercise 4: Working with Deployments](#exercise-4-working-with-deployments)
 
-[Exercise: Working with Services](#exercise-working-with-services)
+[Exercise 5: Working with Services](#exercise-5-working-with-services)
 
-[Exercise: Cleanup](#exercise-cleanup)
+[Exercise 6: Cleanup](#exercise-cleanup)
 
-# Exercise: Create a Basic Azure Kubernetes Service (AKS) Cluster
+# Exercise 1: Create a Basic Azure Kubernetes Service (AKS) Cluster
 
 In this exercise you will create a simple AKS cluster. In the next module, you'll create a more complete one.
 
@@ -119,94 +119,85 @@ This should return a list of nodes similar to the one below:
 
 ![](content/node-list.png)
 
-[Module 1 Table of Contents](#module-1-table-of-contents)
+#### Congratulations! you have successfully created and connect to an Azure Kubernetes Cluster (AKS)
 
-[List of Modules](#modules-list)
-
-# Exercise: Creating a Pod Declaratively
+# Exercise 2: Creating a Pod Declaratively
 
 This Exercise demonstrates the use of a YAML file to create a pod declaratively.
 
 ### Task 1 - Create a Pod declaratively
 
-1. Change into the **Module1** folder
 
-```bash
-cd C:\k8s\labs\Module1
-```
+1. Use the YAML file provided to create a Pod. You may want to open the **simple-pod.yaml** file and review its contents.
 
-2. Use the YAML file provided to create a Pod. You may want to open the **simple-pod.yaml** file and review its contents.
+    The pod definition contains the **Nginx** container that listens to port 80.
 
-The pod definition contains the **Nginx** container that listens to port 80.
+    ```bash
+    kubectl apply -f simple-pod.yaml
+    ```
 
-```bash
-kubectl apply -f simple-pod.yaml
-```
+1. Now, make sure pod is up and running.
 
-3. Now, make sure pod is up and running.
+    ```bash
+    kubectl get pods
+    ```
 
-```bash
-kubectl get pods
-```
+    You should see a pod named **nginx-pod**
 
-You should see a pod named **nginx-pod**
+    ![](content/simple-pod.png)
 
-![](content/simple-pod.png)
+1. Add a second pod, then check the list again.
 
-4. Add a second pod, then check the list again.
-
-```bash
-kubectl apply -f simple-pod2.yaml
-kubectl get pods
-```
+    ```bash
+    kubectl apply -f simple-pod2.yaml
+    kubectl get pods
+    ```
 
 ### Task 2 - Filter pods based on a label
 
 1. Show all the labels in the pods
 
-```bash
-kubectl get pods --show-labels
-```
+    ```bash
+    kubectl get pods --show-labels
+    ```
 
-![](content/pod-list-labels.png)
+    ![](content/pod-list-labels.png)
 
-2. Let's say you want to list pods that have a label named **kind=web** associated with them. You can use **-l** switch to apply filter based on labels.
+1. Let's say you want to list pods that have a label named **kind=web** associated with them. You can use **-l** switch to apply filter based on labels.
 
-```bash
-kubectl get pod -l kind=web
-```
+    ```bash
+    kubectl get pod -l kind=web
+    ```
 
-3. To prove that this works as expected, run the command again but change the value of label **kind** to **db**. Notice, this time _kubectl_ doesn't return any pods because there are no pods that match the label **kind** and a value of **db**.
+1. To prove that this works as expected, run the command again but change the value of label **kind** to **db**. Notice, this time _kubectl_ doesn't return any pods because there are no pods that match the label **kind** and a value of **db**.
 
-```bash
-kubectl get pod -l kind=db
-```
+    ```bash
+    kubectl get pod -l kind=db
+    ```
 
 ### Task 3 - View complete definition of the Pod
 
 1. Query Kubernetes to return the complete definition of a Pod from its internal database by exporting the output (**-o**) to **YAML**. Then pipe the result to a file.
 
-```bash
-kubectl get pods nginx-pod -o yaml > mypod.yaml
-```
+    ```bash
+    kubectl get pods nginx-pod -o yaml > mypod.yaml
+    ```
 
-> To view the JSON version, use the **-o json** flag instead.
+    > To view the JSON version, use the **-o json** flag instead.
 
-2.  View the contents of the generated file in VS Code (or an editor of your choice).
+1.  View the contents of the generated file 
 
-```bash
-code mypod.yaml
-```
+    ```bash
+    cat mypod.yaml
+    ```
 
-![](content/pod-details.png)
+    ![](content/pod-details.png)
 
 **NOTE:** Observe all the properties that Kubernetes populated with default values when it saved the Pod definition to its database.
 
-[Module 1 Table of Contents](#module-1-table-of-contents)
 
-[List of Modules](#modules-list)
 
-# Exercise: Adding/Updating/Deleting Labels on a Pod
+# Exercise 3: Labels on a Pod
 
 In this Exercise, you will create a pod that has labels associated with it. Labels make it easy to filter the pods later. Labels play a vital role in the Kubernetes ecosystem, so it's important to understand their proper usage.
 
@@ -272,7 +263,7 @@ kubectl delete pod -l target=dev
 
 [List of Modules](#modules-list)
 
-# Exercise: Working with Deployments
+# Exercise 4: Working with Deployments
 
 In this Exercise, you will create a Deployment and rollout an application update. Deployments provide a consistent mechanism to upgrade an application to a new version, while keeping the downtime to a minimum. Note that internally, Deployments use _ReplicaSets_ for managing Pods. However, you never work directly with _ReplicaSets_ since Deployments abstract out that interaction.
 
@@ -400,7 +391,7 @@ kubectl delete service ng-svc
 
 [List of Modules](#modules-list)
 
-# Exercise: Working with Services
+# Exercise 5: Working with Services
 
 In this Exercise you will create a simple Service. Services help you expose Pods externally using label selectors.
 
@@ -467,7 +458,7 @@ kubectl delete service sample-svc
 
 [List of Modules](#modules-list)
 
-# Exercise: Cleanup
+# Exercise 6: Cleanup
 
 ### Task 1 - Delete the cluster
 
