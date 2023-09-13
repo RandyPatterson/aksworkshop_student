@@ -239,11 +239,13 @@ In this Exercise, you will create a pod that has labels associated with it. Labe
     kubectl label pod nginx-pod health-
     ```
 
-**NOTE:** Notice the minus (**-**) sign at the end of the command. You can also remove a label from all running pods by using the **--all** flag.
+    **NOTE:** Notice the minus (**-**) sign at the end of the command. You can also remove a label from all running pods by using the **--all** flag.
 
     ```bash
     kubectl label pod health- --all
     ```
+    
+
 
 1. Run the command below to show the pod labels again. Notice that _health_ is not part of the list of labels.
 
