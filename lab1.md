@@ -24,17 +24,16 @@ In this exercise you will create a simple AKS cluster. In the next module, you'l
 
 ### Task 1 - Login into your subscription and register providers
 
-1. Open a Windows Terminal window (defaults to PowerShell).
+1. Log in to your Azure subscription at https://portal.azure.com.
+1. At the top of the portal window, click on the Cloud Shell icon.
 
-    ![](content/windows-terminal.png)
+![](content/cloudshell.png)
 
-    > Windows Terminal allows you to open tabbed command terminals.
+3. Make sure that the Cloud Shell window is open in the Bash mode.
 
-1. Login to Azure.
+   ![](content/bash.png)
 
-    ```bash
-    az login
-    ```
+4. At this point, you are logged in to Azure automatically via Cloud Shell, but you need to make sure Cloud Shell is pointed to the correct subscription if you have multiple Azure subscriptions. Set the current subscription. Your subscription name may be different.
 
 1. Register needed providers.
 
@@ -61,6 +60,11 @@ In this exercise you will create a simple AKS cluster. In the next module, you'l
 
 ### Task 2 - Define variables and create resource group
 
+1. Download files from GitHub
+    ```bash
+    git clone https://github.com/RandyPatterson/aksworkshop_student.git
+    cd aksworkshop_student/
+    ```
 
 1. Set your initials and define variables.
     ```bash
@@ -103,7 +107,7 @@ In this exercise you will create a simple AKS cluster. In the next module, you'l
         --resource-group $AKS_RESOURCE_GROUP
     ```
 
-    > The creation process will take able 5-10 minutes.
+    > This process will take 5-10 minutes to complete
 
 1. Once complete, connect the cluster to your local client machine.
 
