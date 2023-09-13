@@ -205,63 +205,59 @@ In this Exercise, you will create a pod that has labels associated with it. Labe
 
 1. Assign a new label (key=value) pair to a running pod. This comes in handy when you are troubleshooting an issue and would like to distinguish between different pod(s). Assign a new label **health=fair** to the pod **nginx-pod**, which is already running.
 
-```bash
-kubectl label pod nginx-pod health=fair
-```
+    ```bash
+    kubectl label pod nginx-pod health=fair
+    ```
 
-2. Run the command below to show the pod labels. Notice that now an additional label is shown with the pod.
+1. Run the command below to show the pod labels. Notice that now an additional label is shown with the pod.
 
-```bash
-kubectl get pods nginx-pod --show-labels
-```
+    ```bash
+    kubectl get pods nginx-pod --show-labels
+    ```
 
 ### Task 2 - Update an existing label that is assigned to a running pod
 
 1. Update the value of an existing label that is assigned to a running pod. Change the value of the label **kind=web** to **kind=db** of the **nginx-pod** pod.
 
-```bash
-kubectl label pod nginx-pod kind=db --overwrite
-```
+    ```bash
+    kubectl label pod nginx-pod kind=db --overwrite
+    ```
 
 **--overwrite** is needed because the pod is running and won't accept changes otherwise.
 
-2. Show the pod labels again. Notice that _kind_ has changed from **web** to **db**.
+1. Show the pod labels again. Notice that _kind_ has changed from **web** to **db**.
 
-```bash
-kubectl get pods --show-labels
-```
+    ```bash
+    kubectl get pods --show-labels
+    ```
 
 ### Task 3 - Delete a label that is assigned to a running Pod
 
 1. Delete the label **health** from the **nginx-pod** pod.
 
-```bash
-kubectl label pod nginx-pod health-
-```
+    ```bash
+    kubectl label pod nginx-pod health-
+    ```
 
 **NOTE:** Notice the minus (**-**) sign at the end of the command. You can also remove a label from all running pods by using the **--all** flag.
 
-```bash
-kubectl label pod health- --all
-```
+    ```bash
+    kubectl label pod health- --all
+    ```
 
-2. Run the command below to show the pod labels again. Notice that _health_ is not part of the list of labels.
+1. Run the command below to show the pod labels again. Notice that _health_ is not part of the list of labels.
 
-```bash
-kubectl get pods --show-labels
-```
+    ```bash
+    kubectl get pods --show-labels
+    ```
 
 ### Task 4 - Delete Pods based on their labels
 
 1. Delete all the Pods that match a specific label.
 
-```bash
-kubectl delete pod -l target=dev
-```
-
-[Module 1 Table of Contents](#module-1-table-of-contents)
-
-[List of Modules](#modules-list)
+    ```bash
+    kubectl delete pod -l target=dev
+    ```
 
 # Exercise 4: Working with Deployments
 
@@ -273,34 +269,33 @@ The **ng-dep.yaml** file contains a Deployment manifest. The Pod in the _templat
 
 1. Create a Deployment and a Service to access the Pods of the deployment.
 
-```bash
-kubectl apply -f ng-dep.yaml
-kubectl apply -f ng-svc.yaml
-```
+    ```bash
+    kubectl apply -f ng-dep.yaml
+    kubectl apply -f ng-svc.yaml
+    ```
 
-**NOTE:** The _--record_ flag saves the command you applied in the deployment's ReplicaSet history. This helps in deciding which previous Revision to roll back to if needed.
 
-2. Run the following command to see the Pods, ReplicaSets, Deployments and Services that were created.
+1. Run the following command to see the Pods, ReplicaSets, Deployments and Services that were created.
 
-```bash
-kubectl get all --show-labels
-```
+    ```bash
+    kubectl get all --show-labels
+    ```
 
-![](content/get-all.png)
+    ![](content/get-all.png)
 
 ### Task 2 - Access version 1.0 of application
 
 1. Wait about 3-4 minutes to allow Azure to create a Public IP address for the service. Check to see if an address has been assigned by getting the list of services.
 
-```bash
-kubectl get svc
-```
+    ```bash
+    kubectl get svc
+    ```
 
-![](content/services.png)
+    ![](content/services.png)
 
 2. When you see an **EXTERNAL-IP** assigned, open a browser with that address. Example: **http://20.81.24.216**
 
-![](content/kube1.png)
+    ![](content/kube1.png)
 
 ### Task 3 - Update the Deployment to version 2.0
 
@@ -308,51 +303,51 @@ You are now going to update the Deployment to use version **2.0** of the contain
 
 1. To start rolling out the new update, change the container image tag from **1.0** to **2.0** by running this command:
 
-```bash
-kubectl set image deployment ng-dep nginx=k8slab/nginx:2.0
-```
+    ```bash
+    kubectl set image deployment ng-dep nginx=k8slab/nginx:2.0
+    ```
 
-2. In the command above, **ng-dep** is the name of Deployment and **nginx** is the name of the container within the Pod template. The change will force the Deployment to create a new ReplicaSet with an image tagged **2.0**.
+1. In the command above, **ng-dep** is the name of Deployment and **nginx** is the name of the container within the Pod template. The change will force the Deployment to create a new ReplicaSet with an image tagged **2.0**.
 
-3. List all the pods and notice that old pods are terminating and that new Pods have been created.
+1. List all the pods and notice that old pods are terminating and that new Pods have been created.
 
-```bash
-kubectl get pods
-```
+    ```bash
+    kubectl get pods
+    ```
 
-4. Run the follwing command to review the Deployment definition with the updated value of container image:
+1. Run the follwing command to review the Deployment definition with the updated value of container image:
 
-```bash
-kubectl describe deployment ng-dep
-```
+    ```bash
+    kubectl describe deployment ng-dep
+    ```
 
-![](content/kube-describe.png)
+    ![](content/kube-describe.png)
 
-> Notice the Image section (under Containers) shows the value of container image as **2.0**.
+    > Notice the Image section (under Containers) shows the value of container image as **2.0**.
 
-5. Run the command to view the Pods, ReplicaSets and Deployments again.
+1. Run the command to view the Pods, ReplicaSets and Deployments again.
 
-```bash
-kubectl get all
-```
+    ```bash
+    kubectl get all
+    ```
 
-![](content/get-all-2.png)
+    ![](content/get-all-2.png)
 
-> Notice that the old replica set still exists, even though it has 0 Desired Pods.
+    > Notice that the old replica set still exists, even though it has 0 Desired Pods.
 
-6. Run the _describe_ command on that old ReplicaSet.
+1. Run the _describe_ command on that old ReplicaSet.
 
-```bash
-kubectl describe rs <old replicaset name>
-```
+    ```bash
+    kubectl describe rs <old replicaset name>
+    ```
 
-![](content/old-rs.png)
+    ![](content/old-rs.png)
 
-> Notice that the old definition still has the previous version number. This is maintained so you can roll back the change to that version if you which.
+    > Notice that the old definition still has the previous version number. This is maintained so you can roll back the change to that version if you which.
 
-7. Access the 2.0 version of application by refreshing the browser at the same address as above.
+1. Access the 2.0 version of application by refreshing the browser at the same address as above.
 
-![](content/kube2.png)
+    ![](content/kube2.png)
 
 ### Task 4 - Rollback the Deployment
 
@@ -360,36 +355,33 @@ The purpose of maintaining the previous **ReplicaSet** is to be able to rollback
 
 1. Review the deployment history.
 
-```bash
-kubectl rollout history deploy/ng-dep
-```
+    ```bash
+    kubectl rollout history deploy/ng-dep
+    ```
 
-2. Rollback the Deployment to the previous version.
+1. Rollback the Deployment to the previous version.
 
-```bash
-kubectl rollout undo deploy/ng-dep
-```
+    ```bash
+    kubectl rollout undo deploy/ng-dep
+    ```
 
-3. Wait a few seconds and refresh the browser again.
+1. Wait a few seconds and refresh the browser again.
 
-![](content/kube1.png)
+    ![](content/kube1.png)
 
-> Notice the site is back to the previous version.
+    > Notice the site is back to the previous version.
 
 ### Task 5 - Delete the Deployment and Service
 
 1. Delete the Deployment and Service.
 
-```bash
-kubectl delete deployment ng-dep
-kubectl delete service ng-svc
-```
+    ```bash
+    kubectl delete deployment ng-dep
+    kubectl delete service ng-svc
+    ```
 
-**NOTE:** It may take a few minutes to delete the service because has to delete the Public IP resource in Azure.
+    **NOTE:** It may take a few minutes to delete the service because has to delete the Public IP resource in Azure.
 
-[Module 1 Table of Contents](#module-1-table-of-contents)
-
-[List of Modules](#modules-list)
 
 # Exercise 5: Working with Services
 
@@ -399,33 +391,33 @@ In this Exercise you will create a simple Service. Services help you expose Pods
 
 1. Create a deployment.
 
-```bash
-kubectl apply -f sample-dep.yaml
-```
+    ```bash
+    kubectl apply -f sample-dep.yaml
+    ```
 
-2. The **sample-svc.yaml** file contains a Service manifest. Services use label selectors to determine which Pods it needs to track and forward the traffic to.
+1. The **sample-svc.yaml** file contains a Service manifest. Services use label selectors to determine which Pods it needs to track and forward the traffic to.
 
 1. Review running Pods and their labels.
 
-```bash
-kubectl get pods --show-labels
-```
+    ```bash
+    kubectl get pods --show-labels
+    ```
 
-> Notice the label **sample=color** that is associated with the Pods.
+    > Notice the label **sample=color** that is associated with the Pods.
 
-2. Open the **sample-svc.yaml** file and examine the **selector** attribute. Notice the **sample: color** selector. This Service will track all Pods that have a label **sample=color** and load balance traffic between them.
+1. Open the **sample-svc.yaml** file and examine the **selector** attribute. Notice the **sample: color** selector. This Service will track all Pods that have a label **sample=color** and load balance traffic between them.
 
-3. Create the Service.
+1. Create the Service.
 
-```bash
-kubectl apply -f sample-svc.yaml
-```
+    ```bash
+    kubectl apply -f sample-svc.yaml
+    ```
 
-4. Check the of newly created service.
+1. Check the of newly created service.
 
-```bash
-kubectl get svc -o wide
-```
+    ```bash
+    kubectl get svc -o wide
+    ```
 
 The command above will display the details of all available services along with their label selectors. You should see the **sample-svc** Service with **PORTS 80:30101/TCP** and **SELECTOR sample=color**.
 
@@ -433,9 +425,9 @@ The command above will display the details of all available services along with 
 
 1. Open a browser and navigate to the IP address shown in the output of the previous command.
 
-![](content/sample-svc.png)
+    ![](content/sample-svc.png)
 
-2. The website displays the Node IP/Pod IP address of the pod currently receiving the traffic through the service's load balancer. The page refreshes every 3 seconds and each request may be directed to a different pod, with a different IP address. This is the service's internal load balancer at work.
+1. The website displays the Node IP/Pod IP address of the pod currently receiving the traffic through the service's load balancer. The page refreshes every 3 seconds and each request may be directed to a different pod, with a different IP address. This is the service's internal load balancer at work.
 
 ### Task 3 - Delete the Deployment and Service
 
@@ -443,20 +435,18 @@ Deleting any Pod will simply tell Kubernetes that the Deployment is not in its _
 
 1. Delete the Deployment.
 
-```bash
-kubectl delete deployment sample-dep
-```
+    ```bash
+    kubectl delete deployment sample-dep
+    ```
 
-2. The Service is independent of the Pods it services, so it's not affected when the Deployment is deleted. Anyone trying to access the service's address will simply get a 404 error. If the Deployment is ever re-created, the Service will automatically start sending traffic to the new Pods.
-3. Delete the Service.
+1. The Service is independent of the Pods it services, so it's not affected when the Deployment is deleted. Anyone trying to access the service's address will simply get a 404 error. If the Deployment is ever re-created, the Service will automatically start sending traffic to the new Pods.
 
-```bash
-kubectl delete service sample-svc
-```
+1. Delete the Service.
 
-[Module 1 Table of Contents](#module-1-table-of-contents)
+    ```bash
+    kubectl delete service sample-svc
+    ```
 
-[List of Modules](#modules-list)
 
 # Exercise 6: Cleanup
 
@@ -470,4 +460,4 @@ When you're done working with the cluster, you can delete it if you wish. This w
 az aks delete --name $AKS_NAME  --resource-group $AKS_RESOURCE_GROUP
 ```
 
-[List of Modules](#modules-list)
+**NOTE:** This will take several minutes to complete
