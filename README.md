@@ -72,7 +72,8 @@ In this exercise you will create a simple AKS cluster. In the next module, you'l
 1. Replace the string "rrp" with your initials (all lower case)
     ![](content/l1_image5.png)
 
-    When finished, press **CTRL-Q** to quite and click the **SAVE** button
+1. When finished, press **CTRL-Q** to quite and click the **SAVE** button
+    ![](content/l1_image6.png)
 
 1. Create the environment variables
     ```bash
