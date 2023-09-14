@@ -29,34 +29,16 @@ In this exercise you will create a simple AKS cluster. In the next module, you'l
 
 ![](content/cloudshell.png)
 
-3. Make sure that the Cloud Shell window is open in the Bash mode.
+1. Make sure that the Cloud Shell window is open in the Bash mode.
 
    ![](content/bash.png)
 
-4. At this point, you are logged in to Azure automatically via Cloud Shell, but you need to make sure Cloud Shell is pointed to the correct subscription if you have multiple Azure subscriptions. Set the current subscription. Your subscription name may be different.
+1. At this point, you are logged in to Azure automatically via Cloud Shell, but you need to make sure Cloud Shell is pointed to the correct subscription if you have multiple Azure subscriptions. Set the current subscription. Your subscription name may be different.
 
-1. Register needed providers.
-
+1. Set the Subscription 
     ```bash
-    az provider register --namespace Microsoft.Storage
-    az provider register --namespace Microsoft.Compute
-    az provider register --namespace Microsoft.Network
-    az provider register --namespace Microsoft.Monitor
-    az provider register --namespace Microsoft.ManagedIdentity
-    az provider register --namespace Microsoft.OperationalInsights
-    az provider register --namespace Microsoft.OperationsManagement
-    az provider register --namespace Microsoft.KeyVault
-    az provider register --namespace Microsoft.ContainerService
-    az provider register --namespace Microsoft.Kubernetes
+    az account set --subscription "Get ID from Instructor"
     ```
-
-1. Open a browser and navigate to the Azure Portal:    [https://portal.azure.com](https://portal.azure.com)
-
-1. Scroll down and select **Resource providers**.
-
-    ![](content/azure-resources.png)
-
-1. Watch the progress of the registration process until all the providers listed above have been registered. Click the _Refresh_ button every few minutes to update the progess. Once everything has been registered, continue with the tasks in this lab.
 
 ### Task 2 - Setup Environment
 
@@ -87,7 +69,8 @@ In this exercise you will create a simple AKS cluster. In the next module, you'l
     ```bash
     az group create \
         --location $LOCATION \
-        --resource-group $AKS_RESOURCE_GROUP
+        --resource-group $AKS_RESOURCE_GROUP \
+        --tag eai=3539482 shared_resource=false prod=false
     ```
 
 1. Create a simple AKS cluster.
@@ -97,12 +80,13 @@ In this exercise you will create a simple AKS cluster. In the next module, you'l
         --node-count 2 \
         --generate-ssh-keys \
         --name $AKS_NAME  \
-        --resource-group $AKS_RESOURCE_GROUP
+        --resource-group $AKS_RESOURCE_GROUP \
+        --tag eai=3539482 shared_resource=false prod=false
     ```
 
     > This process will take 5-10 minutes to complete
 
-1. Once complete, connect the cluster to your local client machine.
+1. Once complete, connect the cluster to your cloud shell
 
     ```bash
     az aks get-credentials \
