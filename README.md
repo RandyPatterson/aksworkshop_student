@@ -16,7 +16,11 @@
 
 [Exercise 5: Working with Services](#exercise-5-working-with-services)
 
-[Exercise 6: Cleanup](#exercise-cleanup)
+[Exercise 6: Jobs and CronJobs](#exercise-6-working-with-jobs-and-cronjobs)
+
+[Exercise 7: Helm](#exercise-7-working-with-helm)
+
+[Exercise 8: Cleanup](#exercise-cleanup)
 
 # Exercise 1: Create a Basic Azure Kubernetes Service (AKS) Cluster
 
@@ -434,17 +438,203 @@ Deleting any Pod will simply tell Kubernetes that the Deployment is not in its _
     kubectl delete service sample-svc
     ```
 
+# Exercise 6: Working with Jobs and CronJobs
+In this exercise, you will create a Job and a CronJob. Jobs are used to run a task to completion, while CronJobs are used to run a task at a specific time or at regular intervals.
 
-# Exercise 6: Cleanup
+### Task 1 - Working with Kubernetes Jobs
+A Job creates one or more Pods and will continue to retry execution of the Pods until a specified number of them successfully terminate. As pods successfully complete, the Job tracks the successful completions. When a specified number of successful completions is reached, the task (ie, Job) is complete. Deleting a Job will clean up the Pods it created. Suspending a Job will delete its active Pods until the Job is resumed again.
+
+A simple case is to create one Job object in order to reliably run one Pod to completion. The Job object will start a new Pod if the first Pod fails or is deleted (for example due to a node hardware failure or a node reboot).
+
+You can also use a Job to run multiple Pods in parallel.
+
+1. View the contents of the **sample-job.yaml** file.
+
+    ```bash
+    cat sample-job.yaml
+    ```
+    ```yaml
+    apiVersion: batch/v1
+    kind: Job
+    metadata:
+    name: countdown-job
+    spec:
+    # Settings Apply to the whole job
+    completions: 10 # create a total of 10 pods
+    parallelism: 4 # run multiple pods simultanously
+    backoffLimit: 3 # hard stop after 3 failure
+    activeDeadlineSeconds: 100 # total time the whole job has to complete
+    ttlSecondsAfterFinished: 240
+    template:
+        metadata:
+        name: countdown-job
+        labels:
+            app: countdown-job
+            color: aqua
+        spec:
+        containers:
+        - name: counter
+            image: centos:7
+            command:
+            - "bin/bash"
+            - "-c"
+            - "for i in 9 8 7 6 5 4 3 2 1 ; do echo $i; sleep 2 ; done"
+        restartPolicy: OnFailure
+        nodeSelector:
+            kubernetes.io/os: linux
+    ```
+
+    > Notice the **completions** attribute is set to **10** while the **parallelism** is set to 4. This means that the Job will have 4 Pods running at a time until 10 of them successfully terminate (Status=Completed).
+
+1. Create a Job that runs a simple command to print the current date and time.
+
+    ```bash
+    kubectl apply -f sample-job.yaml
+    ```
+
+1. List the pods that are running. Repeat the command until all 10 pods are in the **Completed** state.
+
+    ```bash
+    kubectl get pods
+    ```
+    The output will look similar to the one below:
+
+    ```
+    NAME                  READY   STATUS      RESTARTS   AGE
+    countdown-job-62g7p   0/1     Completed   0          3m10s
+    countdown-job-7s5sb   0/1     Completed   0          3m40s
+    countdown-job-ftsw8   0/1     Completed   0          3m11s
+    countdown-job-fz255   0/1     Completed   0          3m40s
+    countdown-job-hsbbk   0/1     Completed   0          3m10s
+    countdown-job-lcgd6   0/1     Completed   0          3m40s
+    countdown-job-nb8sq   0/1     Completed   0          3m10s
+    countdown-job-pj9hd   0/1     Completed   0          2m49s
+    countdown-job-slbh5   0/1     Completed   0          3m40s
+    countdown-job-wmdb4   0/1     Completed   0          2m48s
+    ```
+1. Clean up the Job.
+
+    ```bash
+    kubectl delete job countdown-job
+    ```
+
+    **NOTE:** This will delete all the Pods that were created by the Job.
+
+
+### Task 2 - Working with Kubernetes CronJobs
+Kubernetes *CronJobs* are a type of Kubernetes resource that allows you to schedule and automate the execution of tasks or jobs at specified intervals. They are useful for running recurring jobs, such as backups, data synchronization, or periodic maintenance tasks.
+
+When a *CronJob* is created, Kubernetes automatically creates a Job object based on the job template and schedules it according to the specified schedule. Each scheduled run of the job creates a new instance of the Job, which runs to completion before terminating.
+
+1. View the contents of the **sample-cronjob.yaml** 
+    ```bash
+    cat sample-cronjob.yaml
+    ```
+
+    ```yaml
+    apiVersion: batch/v1
+    kind: CronJob
+    metadata:
+    name: sample-cron-job
+    spec:
+    # https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/#writing-a-cronjob-spec
+    #            ┌───────────── minute (0 - 59)
+    #            │ ┌───────────── hour (0 - 23)
+    #            │ │ ┌───────────── day of the month (1 - 31)
+    #            │ │ │ ┌───────────── month (1 - 12)
+    #            │ │ │ │ ┌───────────── day of the week (0 - 6) (Sunday to Saturday)
+    #            │ │ │ │ │                                   OR sun, mon, tue, wed, thu, fri, sat
+    #            │ │ │ │ │
+    #            │ │ │ │ │
+    #            * * * * *
+    schedule: "* * * * *"
+    successfulJobsHistoryLimit: 6
+    failedJobsHistoryLimit: 6
+    jobTemplate:
+        spec:
+        completions: 1
+        ttlSecondsAfterFinished: 270
+        template:
+            metadata:
+            labels:
+                color: yellow
+            spec:
+            containers:
+                - name: hello
+                image: busybox
+                args:
+                    - /bin/sh
+                    - -c
+                    - date; echo Hello from the Kubernetes cluster
+                    - sleep 3
+            restartPolicy: OnFailure
+            nodeSelector:
+                kubernetes.io/os: linux
+    ```
+>The CronJob **schedule** tells Kubernetes to run the job every minute. The **completions** attribute is set to **1**. This means that the Job will run once every minute. The **successfulJobsHistoryLimit** and **failedJobsHistoryLimit** attributes are set to **6**. This means that Kubernetes will keep the history of the last 6 successful and failed jobs.
+
+1. Create a CronJob that runs a simple command to print a message then exit.
+
+    ```bash
+    kubectl apply -f sample-cron-job.yaml
+    ```
+
+1. List the CronJobs that are running.
+
+    ```bash
+    kubectl get cronjobs
+    ```
+    The output will show the current status and schedule for the CronJob.
+
+    ```
+    NAME              SCHEDULE    SUSPEND   ACTIVE   LAST SCHEDULE   AGE
+    sample-cron-job   * * * * *   False     0        <none>          20s
+    ```
+
+1. List the pods that Pods that have completed successfully and the ones that have failed (in any).
+
+    ```bash
+    kubectl get pods
+    ```
+
+    The output will show the Pods that have completed successfully and the ones that have failed.
+
+    ```
+    NAME                            READY   STATUS      RESTARTS   AGE
+    sample-cron-job-1631013200-5z5z 0/1     Completed   0          2m
+    sample-cron-job-1631013260-5z5z 0/1     Completed   0          1m
+    sample-cron-job-1631013320-5z5z 0/1     Completed   0          1m
+    sample-cron-job-1631013380-5z5z 0/1     Completed   0          1m
+    sample-cron-job-1631013440-5z5z 0/1     Completed   0          1m
+    sample-cron-job-1631013500-5z5z 0/1     Completed   0          1m
+    ```
+
+1. Clean up the CronJob.
+
+    ```bash
+    kubectl delete cronjob sample-cron-job
+    ```
+    **NOTE:** This will delete all the Pods that were created by the CronJob.
+
+# Exercise 7: Working with Helm
+
+
+# Exercise 8: Cleanup
 
 ### Task 1 - Delete the cluster
 
-When you're done working with the cluster, you can delete it if you wish. This will ensure you don't incur any costs on your sponsorship subscription when you're not working on the labs.
+When you're done with the lab, you can delete the cluster to avoid incurring any charges.
 
-1. Deleting the cluster is as easy as creating it.
+1. re-create the environment variables
 
-```bash
-az aks delete --name $AKS_NAME  --resource-group $AKS_RESOURCE_GROUP
-```
+    ```bash
+    source .env
+    ```
+
+1. Deleting the cluster you created in [Exercise 1](#exercise-1-create-a-basic-azure-kubernetes-service-aks-cluster).
+
+    ```bash
+    az aks delete --name $AKS_NAME  --resource-group $AKS_RESOURCE_GROUP
+    ```
 
 **NOTE:** This will take several minutes to complete
