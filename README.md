@@ -696,7 +696,13 @@ In this exercise, you will use Helm to install and manage a simple application.
     ```
     ![](./content/helm-upgrade.png)
 
-1. Review Helm installation 
+1. Using your favorite browser, navigate to the **EXTERNAL-IP** address Port 3000 __(http://EXTERNAL-IP:3000)__ to access the guestbook application version 2. 
+
+    >NOTE: You may need to refresh the browser using **CTRL-F5** to see the changes.
+
+    ![](./content/helm-v2.png)
+
+1. When you check the Helm release, you will see the revision and date has been updated: 
     
      ```bash
     helm list --namespace guestbook
@@ -704,6 +710,29 @@ In this exercise, you will use Helm to install and manage a simple application.
     the output will look similar to the one below:
     ![](./content/helm-list-2.png)
     
+1. To view all revisions of the Helm release, run the command below:
+
+    ```bash
+    helm history guestbook --namespace guestbook
+    ```
+    The output will look similar to the one below:
+    ![](./content/helm-history.png)
+
+1. To rollback to the previous version of the application, run the command below:
+
+    ```bash
+    helm rollback guestbook 1 --namespace guestbook
+    ```
+    Open the browser and navigate to the **EXTERNAL-IP** address Port 3000 __(http://EXTERNAL-IP:3000)__ to access the guestbook application and verify it has reverted to version 1.
+    
+    >NOTE: You may need to refresh the browser using **CTRL-F5** to see the changes.
+
+1. To delete the Helm release, run the command below:
+
+    ```bash
+    helm uninstall guestbook --namespace guestbook
+    ```
+    >**NOTE**: This will delete all the resources created by the Helm Chart.
 
 # Exercise 8: Cleanup
 
