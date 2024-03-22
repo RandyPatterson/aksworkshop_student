@@ -1,4 +1,4 @@
-# Lab 1: Core Kubernetes Concepts
+# Lab : Core Kubernetes Concepts
 
 ![](content/lab1-title.png)
 
@@ -306,7 +306,7 @@ You are now going to update the Deployment to use version **2.0** of the contain
     kubectl get pods
     ```
 
-1. Run the follwing command to review the Deployment definition with the updated value of container image:
+1. Run the following command to review the Deployment definition with the updated value of container image:
 
     ```bash
     kubectl describe deployment ng-dep
@@ -442,7 +442,7 @@ Deleting any Pod will simply tell Kubernetes that the Deployment is not in its _
 In this exercise, you will create a Job and a CronJob. Jobs are used to run a task to completion, while CronJobs are used to run a task at a specific time or at regular intervals.
 
 ### Task 1 - Working with Kubernetes Jobs
-A Job creates one or more Pods and will continue to retry execution of the Pods until a specified number of them successfully terminate. As pods successfully complete, the Job tracks the successful completions. When a specified number of successful completions is reached, the task (ie, Job) is complete. Deleting a Job will clean up the Pods it created. Suspending a Job will delete its active Pods until the Job is resumed again.
+A Job creates one or more Pods and will continue to retry execution of the Pods until a specified number of them successfully terminate. As pods successfully complete, the Job tracks the successful completions. When a specified number of successful completions is reached, the task (i.e., Job) is complete. Deleting a Job will clean up the Pods it created. Suspending a Job will delete its active Pods until the Job is resumed again.
 
 A simple case is to create one Job object in order to reliably run one Pod to completion. The Job object will start a new Pod if the first Pod fails or is deleted (for example due to a node hardware failure or a node reboot).
 
@@ -484,7 +484,7 @@ You can also use a Job to run multiple Pods in parallel.
             kubernetes.io/os: linux
     ```
 
-    > Notice the **completions** attribute is set to **10** while the **parallelism** is set to 4. This means that the Job will have 4 Pods running at a time until 10 of them successfully terminate (Status=Completed).
+    > Notice the **completions** attribute is set to **10** while the **parallelism** is set to 4. This means that the Job will have 4 Pods running at a time until 10 of them complete successfully  (Status=Completed).
 
 1. Create a Job that runs a simple command to print the current date and time.
 
@@ -617,12 +617,97 @@ When a *CronJob* is created, Kubernetes automatically creates a Job object based
     **NOTE:** This will delete all the Pods that were created by the CronJob.
 
 # Exercise 7: Working with Helm
+In this exercise, you will use Helm to install and manage a simple application.
 
+### Task 1 - Use helm to install an application
+
+1. 
+    ```bash
+        .
+        ├── Chart.yaml    \\ A YAML file containing information about the chart
+        ├── LICENSE       \\ A plain text file containing the license for the chart
+        ├── README.md     \\ A README providing information about the chart usage, configuration, installation etc.
+        ├── templates     \\ A directory of templates that will generate valid Kubernetes manifest files when combined with values.yaml
+        │   ├── _helpers.tpl               \\ Template helpers/definitions that are re-used throughout the chart
+        │   ├── guestbook-deployment.yaml  \\ Guestbook app container resource
+        │   ├── guestbook-service.yaml     \\ Guestbook app service resource
+        │   ├── NOTES.txt                  \\ A plain text file containing short usage notes about how to access the app post install
+        │   ├── redis-master-deployment.yaml  \\ Redis master container resource
+        │   ├── redis-master-service.yaml     \\ Redis master service resource
+        │   ├── redis-slave-deployment.yaml   \\ Redis slave container resource
+        │   └── redis-slave-service.yaml      \\ Redis slave service resource
+        └── values.yaml   \\ The default configuration values for the chart
+    ```
+    
+1. Create a Namespace to host the guestbook application
+
+    ```bash
+    kubectl create namespace guestbook
+    ```
+1. From the **aksworkshop_student** directory, Install the application using Helm.
+
+    ```bash
+    helm install guestbook ./guestbook --namespace guestbook
+    ```
+
+1. List the resources created by the Helm Chart
+    
+    ```bash
+    kubectl get all --namespace guestbook
+    ```
+
+    The output will look similar to the one below:
+    
+    ![](./content/helm-resources.png)    
+
+>Note: The **guestbook** application is a simple multi-tier web application that allows users to post messages and read messages from other users. The application consists of a web front end, a Redis master for storage, and a replicated set of Redis slaves. 
+
+1. Locate the guestbook service and using your favorite browser, navigate to the **EXTERNAL-IP** address Port 3000 __(http://EXTERNAL-IP:3000)__ to access the guestbook application. You may need to wait a few minutes for the **EXTERNAL-IP** to be assigned.
+>NOTE: Your IP address will be different from the one shown in the image below.
+    ![](./content/helm-v1.png)
+
+1. Review Helm installation 
+    
+    ```bash
+    helm list --namespace guestbook
+    ```
+    the output will look similar to the one below:
+    ![](./content/helm-list-1.png)
+>NOTE: There is currently one release of the guestbook application installed in the **guestbook** namespace as indicated by the single **REVISION**
+1. Deploy version 2 of the application
+
+    ```bash
+    code guestbook/Chart.yaml
+    ```
+    Update **apiVersion to v2** and **version to 2.2.2**
+    ![](./content/helm-update-chart.png)
+    Press **CTRL-Q** to quit then click the **SAVE** button
+
+    Next, update the application image to Version 2. Change the tag for the repository *ibmcom/guestbook* from v1 to **v2**
+    ```bash
+    code guestbook/values.yaml
+    ```
+    ![](./content/helm-update-values.png)
+    Press **CTRL-Q** to quit then click the **SAVE** button
+
+    Now lets deploy the updated application with the new image
+    ```bash
+    helm upgrade guestbook ./guestbook --namespace guestbook
+    ```
+    ![](./content/helm-upgrade.png)
+
+1. Review Helm installation 
+    
+     ```bash
+    helm list --namespace guestbook
+    ```
+    the output will look similar to the one below:
+    ![](./content/helm-list-2.png)
+    
 
 # Exercise 8: Cleanup
 
 ### Task 1 - Delete the cluster
-
 When you're done with the lab, you can delete the cluster to avoid incurring any charges.
 
 1. re-create the environment variables
