@@ -371,7 +371,7 @@ The purpose of maintaining the previous **ReplicaSet** is to be able to rollback
     kubectl delete service ng-svc
     ```
 
-    **NOTE:** It may take a few minutes to delete the service because has to delete the Public IP resource in Azure.
+    ![](./content/note.png)**NOTE:** It may take a few minutes to delete the service because has to delete the Public IP resource in Azure.
 
 
 # Exercise 5: Working with Services
@@ -520,7 +520,7 @@ You can also use a Job to run multiple Pods in parallel.
     kubectl delete job countdown-job
     ```
 
-    **NOTE:** This will delete all the Pods that were created by the Job.
+    ![](./content/note.png)**NOTE:** This will delete all the Pods that were created by the Job.
 
 
 ### Task 2 - Working with Kubernetes CronJobs
@@ -616,7 +616,7 @@ When a *CronJob* is created, Kubernetes automatically creates a Job object based
     ```bash
     kubectl delete cronjob sample-cron-job
     ```
-    **NOTE:** This will delete all the Pods that were created by the CronJob.
+    ![](./content/note.png)**NOTE:** This will delete all the Pods that were created by the CronJob.
 
 # Exercise 7: Working with Helm
 In this exercise, you will use Helm to install and manage a simple application.
@@ -662,10 +662,10 @@ In this exercise, you will use Helm to install and manage a simple application.
     
     ![](./content/helm-resources.png)    
 
->Note: The **guestbook** application is a simple multi-tier web application that allows users to post messages and read messages from other users. The application consists of a web front end, a Redis master for storage, and a replicated set of Redis slaves. 
+>![](./content/note.png)Note: The **guestbook** application is a simple multi-tier web application that allows users to post messages and read messages from other users. The application consists of a web front end, a Redis master for storage, and a replicated set of Redis slaves. 
 
 1. Locate the guestbook service and using your favorite browser, navigate to the **EXTERNAL-IP** address Port 3000 __(http://EXTERNAL-IP:3000)__ to access the guestbook application. You may need to wait a few minutes for the **EXTERNAL-IP** to be assigned.
->NOTE: Your IP address will be different from the one shown in the image below.
+>![](./content/note.png)NOTE: Your IP address will be different from the one shown in the image below.
     ![](./content/helm-v1.png)
 
 1. Review Helm installation 
@@ -675,7 +675,7 @@ In this exercise, you will use Helm to install and manage a simple application.
     ```
     the output will look similar to the one below:
     ![](./content/helm-list-1.png)
->NOTE: There is currently one release of the guestbook application installed in the **guestbook** namespace as indicated by the single **REVISION**
+>![](./content/note.png)NOTE: There is currently one release of the guestbook application installed in the **guestbook** namespace as indicated by the single **REVISION**
 1. Deploy version 2 of the application
 
     ```bash
@@ -700,7 +700,7 @@ In this exercise, you will use Helm to install and manage a simple application.
 
 1. Using your favorite browser, navigate to the **EXTERNAL-IP** address Port 3000 __(http://EXTERNAL-IP:3000)__ to access the guestbook application version 2. 
 
-    >NOTE: You may need to refresh the browser using **CTRL-F5** to see the changes.
+    >![](./content/note.png)NOTE: You may need to refresh the browser using **CTRL-F5** to see the changes.
 
     ![](./content/helm-v2.png)
 
@@ -727,7 +727,7 @@ In this exercise, you will use Helm to install and manage a simple application.
     ```
     Open the browser and navigate to the **EXTERNAL-IP** address Port 3000 __(http://EXTERNAL-IP:3000)__ to access the guestbook application and verify it has reverted to version 1.
     
-    >NOTE: You may need to refresh the browser using **CTRL-F5** to see the changes.
+    >![](./content/note.png)NOTE: You may need to refresh the browser using **CTRL-F5** to see the changes.
 
 1. To delete the Helm release, run the command below:
 
@@ -753,4 +753,4 @@ When you're done with the lab, you can delete the cluster to avoid incurring any
     az aks delete --name $AKS_NAME  --resource-group $AKS_RESOURCE_GROUP
     ```
 
-**NOTE:** This will take several minutes to complete
+![](./content/note.png)**NOTE:** This will take several minutes to complete
