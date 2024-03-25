@@ -182,7 +182,7 @@ This Exercise demonstrates the use of a YAML file to create a pod declaratively.
 
     ![](content/pod-details.png)
 
-**NOTE:** Observe all the properties that Kubernetes populated with default values when it saved the Pod definition to its database.
+>![](./content/note.png)**NOTE:** Observe all the properties that Kubernetes populated with default values when it saved the Pod definition to its database.
 
 
 
@@ -228,7 +228,7 @@ In this Exercise, you will create a pod that has labels associated with it. Labe
     kubectl label pod nginx-pod health-
     ```
 
-    **NOTE:** Notice the minus (**-**) sign at the end of the command. You can also remove a label from all running pods by using the **--all** flag.
+    ![](./content/note.png)**NOTE:** Notice the minus (**-**) sign at the end of the command. You can also remove a label from all running pods by using the **--all** flag.
 
     ```bash
     kubectl label pod health- --all
@@ -494,6 +494,8 @@ You can also use a Job to run multiple Pods in parallel.
 
 1. List the pods that are running. Repeat the command until all 10 pods are in the **Completed** state.
 
+>![](./content/note.png)**NOTE:** The **parallelism** attribute is set to 4, so you will see only 4 Pods running. As each Pod completes, a new one will start until all 10 have completed. 
+
     ```bash
     kubectl get pods
     ```
@@ -538,15 +540,15 @@ When a *CronJob* is created, Kubernetes automatically creates a Job object based
     name: sample-cron-job
     spec:
     # https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/#writing-a-cronjob-spec
-    #            ┌───────────── minute (0 - 59)
-    #            │ ┌───────────── hour (0 - 23)
-    #            │ │ ┌───────────── day of the month (1 - 31)
-    #            │ │ │ ┌───────────── month (1 - 12)
-    #            │ │ │ │ ┌───────────── day of the week (0 - 6) (Sunday to Saturday)
-    #            │ │ │ │ │                                   OR sun, mon, tue, wed, thu, fri, sat
-    #            │ │ │ │ │
-    #            │ │ │ │ │
-    #            * * * * *
+    #          ┌───────────── minute (0 - 59)
+    #          │ ┌───────────── hour (0 - 23)
+    #          │ │ ┌───────────── day of the month (1 - 31)
+    #          │ │ │ ┌───────────── month (1 - 12)
+    #          │ │ │ │ ┌───────────── day of the week (0 - 6) (Sunday to Saturday)
+    #          │ │ │ │ │                                   OR sun, mon, tue, wed, thu, fri, sat
+    #          │ │ │ │ │
+    #          │ │ │ │ │
+    #          * * * * *
     schedule: "* * * * *"
     successfulJobsHistoryLimit: 6
     failedJobsHistoryLimit: 6
